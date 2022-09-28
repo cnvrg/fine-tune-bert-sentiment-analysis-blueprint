@@ -1,6 +1,0 @@
-numpy
-pandas
-sklearn
-matplotlib
-transformers
-torch
