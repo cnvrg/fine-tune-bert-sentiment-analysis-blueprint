@@ -1,0 +1,6 @@
+---
+DATASET_COLUMNS: ["target", "timestamp", "datetime", "query", "user", "text"]
+DATASET_ENCODING: "ISO-8859-1"
+SMALL_DATASET: '/1.6m_twitts_small.csv'
+INFERENCE_DATASET: '/1.6m_twitts_small_inference.csv'
+
