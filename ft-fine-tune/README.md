@@ -6,7 +6,8 @@ Notes for this Component -
 
 The library trains a sentiment analysis model on given labeled data and produces a prediction model and a tokenizer.
 By default the library needs the receive a single path (--input_filename) for a local file.
-The library performs fine-tuning of the pre-trained bert model from huggingface with its associated tokenizer.   
+The library performs fine-tuning of the pre-trained bert model from huggingface with ts associated tokenizer.   
+
 
 ## How To Run
 

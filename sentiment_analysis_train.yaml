@@ -23,7 +23,7 @@ tasks:
 
     # The library data
     library: fine-tune-s3-connector
-    library_version: 1.0.7
+    library_version: 1.0.11
 
     # The flattened library parameters (in this case we have training library)
     command: python3 ft-s3-connector.py
@@ -65,7 +65,7 @@ tasks:
 
     # The library data
     library: fine-tune-dataset-split
-    library_version: 1.0.7
+    library_version: 1.0.11
 
     # The flattened library parameters (in this case we have training library)
     command: python3 dataset_split.py
@@ -89,7 +89,7 @@ tasks:
       - key: valid_size
         type: categorical
         values:
-          - '0.01'
+          - '0.0001'
   - title: Fine Tune Sentiment
     top: 300
     left: 400
@@ -99,7 +99,7 @@ tasks:
 
     # The library data
     library: fine-tune-sentiment
-    library_version: 1.0.7
+    library_version: 1.0.11
 
     # The flattened library parameters (in this case we have training library)
     command: python3 fine-tune.py
@@ -119,7 +119,7 @@ tasks:
       - key: input_filename
         type: 'categorical'
         values:
-          - '/input/fine_tune_dataset_split/1.6m_twitts_small_small.csv'
+          - '/input/fine_tune_dataset_split/1.6m_twitts_small.csv'
       - key: output_model_path
         type: 'categorical'
         values:
@@ -157,7 +157,7 @@ tasks:
 
     # The library data
     library: fine-tune-inference-tw
-    library_version: 1.0.7
+    library_version: 1.0.11
 
     # The flattened library parameters (in this case we have inference library)
     command: python3 fine-tune-inference.py
@@ -178,7 +178,7 @@ tasks:
       - key: input_filename
         type: 'categorical'
         values:
-        - '/input/fine_tune_dataset_split/1.6m_twitts_small_small_inference.csv'
+        - '/input/fine_tune_dataset_split/1.6m_twitts_small_inference.csv'
       - key: model_path
         type: 'categorical'
         values:

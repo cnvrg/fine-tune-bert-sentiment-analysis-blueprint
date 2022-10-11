@@ -1,0 +1,9 @@
+---
+DATASET_COLUMNS: ["target", "timestamp", "datetime", "query", "user", "text"]
+DATASET_ENCODING: "ISO-8859-1"
+DECODE_MAP: {0: 0, 2: 1, 4: 2}
+EMBEDDING_LAYER: 5
+ENCODER_LAYER: 21
+OUTPUT_LAYER: -4
+EVAL_STPES: 500
+

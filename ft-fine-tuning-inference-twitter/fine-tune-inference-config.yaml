@@ -1,0 +1,7 @@
+---
+DATASET_COLUMNS: ["target", "timestamp", "datetime", "query", "user", "text"]
+DATASET_ENCODING: "ISO-8859-1"
+DATASET_PREDICTION: "prediction"
+DATASET_TEXT: "text"
+RESULT_FILE: '/prediction_result.csv'
+

@@ -1,6 +1,6 @@
 ---
 title: Fine Tune S3 Connector # required on creation, a slug will be generated from the title? -> inference-library
-version: 1.0.7 # required
+version: 1.0.11 # required
 description: "Read data from s3" # optional
 icon: python # optional
 

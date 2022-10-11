@@ -1,6 +1,6 @@
 ---
 title: Fine Tune Dataset Split # required on creation, a slug will be generated from the title? -> inference-library
-version: 1.0.7 # required
+version: 1.0.11 # required
 description: "Split original sentiment dataset into 1% and 10% sets" # optional
 icon: python # optional
 
@@ -41,4 +41,4 @@ arguments:
   - key: valid_size
     type: categorical
     values:
-      - '0.01'
+      - '0.0001'

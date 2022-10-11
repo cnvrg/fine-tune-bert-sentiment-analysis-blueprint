@@ -1,6 +1,6 @@
 ---
 title: Fine Tune Inference Tw # required on creation, a slug will be generated from the title? -> inference-library
-version: 1.0.7 # required
+version: 1.0.11 # required
 description: "sample description" # optional
 icon: python # optional
 
@@ -36,7 +36,7 @@ arguments:
   - key: input_filename
     type: 'categorical'
     values:
-    - './1.6m_twitts_small_small_inference.csv'
+    - './1.6m_twitts_small_inference.csv'
   - key: model_path
     type: 'categorical'
     values:

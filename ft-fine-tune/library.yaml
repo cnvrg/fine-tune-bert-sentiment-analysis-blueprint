@@ -1,6 +1,6 @@
 ---
 title: Fine Tune Sentiment # required on creation, a slug will be generated from the title? -> inference-library
-version: 1.0.7 # required
+version: 1.0.11 # required
 description: "sample description" # optional
 icon: python # optional
 
@@ -36,7 +36,7 @@ arguments:
   - key: input_filename
     type: 'categorical'
     values:
-    - '/input/dev_fine_tune_dataset_split_3/1.6m_twitts_small_small.csv'
+    - '/input/dev_fine_tune_dataset_split_3/1.6m_twitts_small.csv'
   - key: output_model_path
     type: 'categorical'
     values:
