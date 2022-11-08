@@ -9,7 +9,25 @@ from transformers import Trainer
 from transformers import BertTokenizer, BertForSequenceClassification
 import re
 import pandas as pd
+import argparse
 
+def parse_parameters():
+    parser = argparse.ArgumentParser(description="""Inference prediction by using fine-tuned bert model""")
+    model_path = os.path.join(scripts_dir, 'checkpoint-50')
+    parser.add_argument('-model_path', '--model_path', action='store',
+                        default=model_path, required=False,
+                        help="""string. path for calling the model""")
+
+    parser.add_argument('-text', '--text_column', action='store', dest='text_column', default='text', required=False,
+                        help="""string. name of text column""")
+        
+    parser.add_argument('-model_name', '--model_name', action='store', default="bert-base-uncased", required=False,
+                        help="""string. name for calling the model""")
+
+    parser.add_argument('-cuda_device', '--cuda_device', action='store', default="0", required=False,
+                        help="""envrionment variable setup""")
+
+    return parser.parse_args()
 
 def preprocess(text, stem=False):
     # TEXT CLENAING
@@ -43,24 +61,53 @@ class Dataset_test(torch.utils.data.Dataset):
     def __len__(self):
         return len(self.encodings["input_ids"])
 
+class NoModelError(Exception):
+    """Raise if model folder existing"""
+
+    def __init__(self):
+        super().__init__()
+
+    def __str__(self):
+        return "NoModelError: It required model folder for inference!"
+        
+
+def validate_arguments(args):
+    """Validates input arguments
+    Checks if the model folder existing
+    Args:
+        args: argparse object
+    Raises:
+        NoModelError: If the model folder existing
+    """
+    if not ("checkpoint" in args.model_path):
+        raise NoModelError()
 
 # Define predict function
 def predict(data):
+    args = parse_parameters()
+    validate_arguments(args)
+    model_path = args.model_path
+    text_column = args.text_column
+    model_name = args.model_name
+    cuda_device = args.cuda_device
+
+    # for unittests
+    # model_path = os.path.join(scripts_dir, 'checkpoint-50')
+    # text_column = 'text'
+    # model_name = "bert-base-uncased"
+    # cuda_device = "0"
+
     sentiment_label = ['negative', 'neutral', 'positive']
 
-    input_data = data["text"]
-    data = pd.DataFrame([input_data], columns=["text"])
-    data_input=data["text"]
+    input_data = data[text_column]
+    data = pd.DataFrame([input_data], columns=[text_column])
+    data_input=data[text_column]
 
     data_input = data_input.apply(lambda x: preprocess(x))
 
     # os.chdir("fine-tune-inference/ft-fine-tuning-inference")
-    os.environ['CUDA_VISIBLE_DEVICES'] = "0"
+    os.environ['CUDA_VISIBLE_DEVICES'] = cuda_device
 
-    scripts_dir = pathlib.Path(__file__).parent.resolve()
-    model_path = os.path.join(scripts_dir, 'checkpoint-50')
-
-    model_name = "bert-base-uncased"
     tokenizer = BertTokenizer.from_pretrained(model_name)
     model = BertForSequenceClassification.from_pretrained(model_path, num_labels=3)
     print("loaded model")
@@ -87,7 +134,7 @@ def predict(data):
 
 
 # import json
-# data_set = {"text": 'Good Weather'}
+# data_set = {"text": 'Bad Weather'}
 
 # json_dump = json.dumps(data_set)
 # print('====json_dump====', json_dump)
@@ -97,7 +144,7 @@ def predict(data):
 
 # if __name__ == "__main__":
 #     result = predict(data)
-#     print(result)
+#     # print(result)
 
 
 
