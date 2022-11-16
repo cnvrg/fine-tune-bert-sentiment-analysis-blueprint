@@ -12,7 +12,7 @@ The following list outlines this library's high-level flow:
 
 ## Inputs
 This library assumes that the user has access to the preprocessed dataset via previous libraries in the Blueprint. The input dataset must be in CSV format.
-The ADTS Train-Valid Split library requires the following inputs:
+The FT Dataset Split library requires the following inputs:
 * `--dataset_path` - string, required. Provide the path to the original dataset in CSV format.
 * `--valid_size` - string, optional. Specify size of the validation set as a number between 0.0 and 1.0. Default value: `0.0001`, which is 0.01% of original dataset.
 
