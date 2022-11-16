@@ -1,26 +1,25 @@
 ---
-title: FT Sentiment # required on creation, a slug will be generated from the title? -> inference-library
-version: 1.0.1 # required
+title: Twitter Connector # required on creation, a slug will be generated from the title? -> inference-library
+version: 1.0.14 # required
 description: "sample description" # optional
 icon: python # optional
 
 # Optional properties for crediting authors
 author: "cnvrg"
-author_email: "info@cnvrg.io"
+author_email: "libhub@cnvrg.io"
 
 # At least one tag [inference, training, data] must be present
 tags:
   - training
-  - nlp
 
 # Available only for training (exec tasks) libraries only
-command: python3 fine-tune.py
+command: python3 pull_twitter_data.py
 
 # These will replace the "compute" argument, values must be >= 0:
 # We need to add requirement for distributed pods
 requirements:
-  cpu: 3.5
-  memory: 8
+  cpu: 1.5
+  memory: 2
   gpu: 0
   hpu: 0
 
@@ -33,35 +32,31 @@ language: python3
 arguments:
   # Training arguments will have type and value, valid types are [discrete, float, integer, categorical]
   # Empty value will mark the argument as 'required', adding a default value will place it in the flow.
-  - key: input_filename
+  - key: token
     type: 'categorical'
     values:
-    - '/input/dev_ft_dataset_split/1.6m_twitts_small.csv'
-  - key: output_model_path
+    - ''
+  - key: term
     type: 'categorical'
     values:
-      - '/cnvrg/output'
-  - key: text_column
+      - 'World Cup'
+  - key: dataset
     type: 'categorical'
     values:
-      - 'text'
-  - key: label_column
+      - ''
+  - key: output_file
     type: 'categorical'
     values:
-      - 'target'
-  - key: num_train_epochs
+      - 'twitts_worldcup.csv'
+  - key: max_twitts
     type: 'discrete'
     values:
-      - '1'
-  - key: max_length
+      - '100'
+  - key: end_point
+    type: 'categorical'
+    values:
+      - 'recent'
+  - key: days_back
     type: 'discrete'
     values:
-      - '300'
-  - key: batch_size_train
-    type: 'discrete'
-    values:
-      - '256'
-  - key: batch_size_val
-    type: 'discrete'
-    values:
-      - '256'
+      - '3'

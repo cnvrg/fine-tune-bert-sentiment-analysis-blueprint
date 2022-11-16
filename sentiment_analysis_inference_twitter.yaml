@@ -1,5 +1,5 @@
 ---
-title: FT Sentiment Inference Tw # Required on creation, replaces the "flow" parameter
+title: Twitter BERT Inference # Required on creation, replaces the "flow" parameter
 version: 1.0.0 # Required
 description: Analyze sentiment analysis in text
 long_description: This blueprint allows you to deploy a ready to use endpoint that can analyse sentiment twitter
@@ -14,7 +14,62 @@ tags:
 
 # List of tasks (libraries)
 tasks:
-  - title: Fine Tune Inference Tw
+  - title: Twitter Connector
+    top: 300
+    left: 0
+
+    # Type must be according to the flow task conventions (data, exec, deploy)
+    type: exec
+
+    # The library data
+    library: twitter-connector
+    library_version: 1.0.16
+
+    # The flattened library parameters (in this case we have training library)
+    command: python3 pull_twitter_data.py
+
+    requirements:
+      cpu: 1.5
+      memory: 2
+      gpu: 0
+      hpu: 0
+
+    image: python:3.8
+    language: python3
+
+    # The "arguments" property changes to "params", rest remains the same.
+    # Params in the blueprint yaml can be used to override the arguments in the library.
+    params:
+      - key: token
+        type: 'categorical'
+        values:
+        - ''
+      - key: term
+        type: 'categorical'
+        values:
+          - 'World Cup'
+      - key: dataset
+        type: 'categorical'
+        values:
+          - ''
+      - key: output_file
+        type: 'categorical'
+        values:
+          - 'twitts_worldcup.csv'
+      - key: max_twitts
+        type: 'discrete'
+        values:
+          - '100'
+      - key: end_point
+        type: 'categorical'
+        values:
+          - 'recent'
+      - key: days_back
+        type: 'discrete'
+        values:
+          - '3'
+
+  - title: FT Batch Predict
     top: 300
     left: 400
 
@@ -22,8 +77,8 @@ tasks:
     type: exec
 
     # The library data
-    library: fine-tune-inference-tw
-    library_version: 1.0.11
+    library: ft-batch-predict
+    library_version: 1.0.16
 
     # The flattened library parameters (in this case we have training library)
     command: python3 fine-tune-inference.py
@@ -43,7 +98,7 @@ tasks:
       - key: input_filename
         type: 'categorical'
         values:
-        - './1.6m_twitts_small_inference.csv'
+        - '/input/twitter_connector/twitts_worldcup.csv'
       - key: model_path
         type: 'categorical'
         values:
@@ -56,4 +111,6 @@ tasks:
         type: 'categorical'
         values:
           - 'text'
-relations: []
+relations:
+  - from: Twitter Connector
+    to: FT Batch Predict
