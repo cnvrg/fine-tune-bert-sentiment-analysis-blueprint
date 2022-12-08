@@ -6,8 +6,6 @@ import datetime
 import csv
 import dateutil
 
-
-
 class DaysAction(argparse.Action):
     def __call__(self, parser, namespace, values, option_string=None):
         if not 0 < values < 7:
@@ -21,69 +19,35 @@ class EndPointAction(argparse.Action):
             raise argparse.ArgumentError(self, "endpoint must be 'recent'  or 'all' ")
         setattr(namespace, self.dest, values)
 
+def parse_parameters():
+    parser = argparse.ArgumentParser(description="""Preprocessor""")
 
-parser = argparse.ArgumentParser(description="""Preprocessor""")
-
-parser.add_argument('--token', action='store', dest='token', required=True,
-					help="""string. bearer token for tweeter access.""")
-
-
-parser.add_argument('--term', action='store', dest='term', required=True,
-					help="""string. keyword for twetter search.""")
-
-parser.add_argument('-d','--dataset', action='store', dest='dataset', required=False,
-					help="""string. dataset for saving the result.""")
+    parser.add_argument('--token', action='store', dest='token', required=True,
+                        help="""string. bearer token for tweeter access.""")
 
 
-parser.add_argument('-o','--output_file', action='store', dest='output_file' ,default='twitts.csv' ,required=False,
-					help="""string. filename for saving the data""")                    
+    parser.add_argument('--term', action='store', dest='term', required=True,
+                        help="""string. keyword for twetter search.""")
+
+    parser.add_argument('-d','--dataset', action='store', dest='dataset', required=False,
+                        help="""string. dataset for saving the result.""")
 
 
-parser.add_argument('-m','--max_twitts', action='store', dest='max_twitts' ,default=500 ,required=False,
-					type=int, help="""max num of twitts""")  
+    parser.add_argument('-o','--output_file', action='store', dest='output_file' ,default='twitts.csv' ,required=False,
+                        help="""string. filename for saving the data""")                    
 
 
-parser.add_argument('-e','--end_point', action=EndPointAction, dest='endpoint' ,default='recent' ,required=False,
-					help="""string. twitter api endpoint""") 
+    parser.add_argument('-m','--max_twitts', action='store', dest='max_twitts' ,default=500 ,required=False,
+                        type=int, help="""max num of twitts""")  
 
 
-parser.add_argument('-b','--days_back', action=DaysAction, dest='days_back' ,default=3 ,required=False,
-					type=int, help="""num of days back for recent twitts""") 
+    parser.add_argument('-e','--end_point', action=EndPointAction, dest='endpoint' ,default='recent' ,required=False,
+                        help="""string. twitter api endpoint""") 
 
 
-
-args = parser.parse_args()
-token = args.token
-term = args.term
-dataset = args.dataset
-max_twitts = args.max_twitts
-endpoint = args.endpoint
-days_back = args.days_back
-OUTFILE = '/cnvrg/{}'.format(args.output_file)
-
-
-
-
-print("token = ",token)
-print("search term = ",term)
-print("output file = ", OUTFILE)
-print("max twitts  = ", max_twitts)
-print("endpoint = ", endpoint)
-print("days back = ", days_back)
-print("dir = ",os.getcwd())
-
-
-
-
-
-
-# Create file
-csvFile = open(OUTFILE, "a", newline="", encoding='utf-8')
-csvWriter = csv.writer(csvFile)
-
-#Create columns 
-csvWriter.writerow(['author id', 'created_at', 'geo', 'id','lang', 'like_count', 'quote_count', 'reply_count','retweet_count','source','text'])
-csvFile.close()
+    parser.add_argument('-b','--days_back', action=DaysAction, dest='days_back' ,default=3 ,required=False,
+                        type=int, help="""num of days back for recent twitts""") 
+    return parser.parse_args()
 
 
 def append_to_csv(json_response, fileName):
@@ -131,6 +95,8 @@ def create_headers(bearer_token):
 
 
 def create_url(keyword, start_date, end_date, max_results = 10):
+    args = parse_parameters()
+    endpoint = args.endpoint
     
     search_url = "https://api.twitter.com/2/tweets/search/{}".format(endpoint) 
 
@@ -155,7 +121,31 @@ def connect_to_endpoint(url, headers, params, next_token = None):
 
 
 
-def get_last_tweets(token, term):
+def get_last_tweets():
+    args = parse_parameters()
+    token = args.token
+    term = args.term
+    dataset = args.dataset
+    max_twitts = args.max_twitts
+    endpoint = args.endpoint
+    days_back = args.days_back
+    OUTFILE = '/cnvrg/{}'.format(args.output_file)
+
+    print("token = ",token)
+    print("search term = ",term)
+    print("output file = ", OUTFILE)
+    print("max twitts  = ", max_twitts)
+    print("endpoint = ", endpoint)
+    print("days back = ", days_back)
+    print("dir = ",os.getcwd())
+
+    # Create file
+    csvFile = open(OUTFILE, "a", newline="", encoding='utf-8')
+    csvWriter = csv.writer(csvFile)
+
+    #Create columns 
+    csvWriter.writerow(['author id', 'created_at', 'geo', 'id','lang', 'like_count', 'quote_count', 'reply_count','retweet_count','source','text'])
+    csvFile.close()
     #Inputs for the request
     flag = True
     next_token = None
@@ -188,6 +178,8 @@ def get_last_tweets(token, term):
         os.system("cd {} && cnvrg data init && cnvrg data put ../{}".format(dataset, OUTFILE))
 
 
-get_last_tweets(token,term)
+if __name__ == "__main__":
+    get_last_tweets()
+
 
 
