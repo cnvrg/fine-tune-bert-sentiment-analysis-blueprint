@@ -130,3 +130,5 @@ class TestFT(unittest.TestCase):
         self.assertEqual(all(returned_lists_trainy), all(self.train_mapped))
         self.assertEqual(all(returned_lists_validy), all(self.valid_mapped))
 
+if __name__ == "__main__":
+    unittest.main()
