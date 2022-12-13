@@ -25,7 +25,7 @@ run python3 fine-tune.py -f  for info about more optional parameters of hyper pa
 
 `--label_column` - (String) (Default: 'target') Name of label column in dataframe.
 
-`--um_train_epochs` - (int) (Default: 1) The number of epochs the algorithm performs in the training phase.
+`--num_train_epochs` - (int) (Default: 1) The number of epochs the algorithm performs in the training phase.
 
 `--max_length` - (int) (Default: 300) The number of characters per sequence.
 

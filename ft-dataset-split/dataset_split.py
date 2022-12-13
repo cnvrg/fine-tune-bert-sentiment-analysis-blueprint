@@ -5,17 +5,19 @@ import pandas as pd
 #from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
 import yaml
+import unittest
 
-# # The path for listing items
-# path = '/input/'
-# file_list = []
-# for path, folders, files in os.walk(path):
-#     for file in files:
-#         file_list.append(os.path.join(path, file))
- 
-# # Loop to print each filename separately
-# for filename in file_list:
-#     print("===All Files in input===", filename)
+def list_file():
+    # The path for listing items
+    path = '/input/'
+    file_list = []
+    for path, folders, files in os.walk(path):
+        for file in files:
+            file_list.append(os.path.join(path, file))
+    
+    # Loop to print each filename separately
+    for filename in file_list:
+        print("===All Files in input===", filename)
 
 # Read config file
 with open("dataset_split-config.yaml", "r") as file:
@@ -59,7 +61,8 @@ def validate_arguments(args):
             if 0.0 <= input < 0.4: 
                 break
             else:
-                print ('Validation size needs to be a value between 0.0 and 0.4.')
+                # print ('Validation size needs to be a value between 0.0 and 0.4.')
+                raise ValueError("Validation size needs to be a value between 0.0 and 0.4.")
 
     # assert(
     #     float(args.valid_size) > 0 and float(args.valid_size) <= 0.4
@@ -89,6 +92,7 @@ def tvsplit_main():
     DATASET_COLUMNS = config["DATASET_COLUMNS"]
     DATASET_ENCODING = config["DATASET_ENCODING"]
     # Get parameters and read preprocessed dataset file
+    # list_file() # check the default files in the converge path
     args = parse_parameters()
     validate_arguments(args)
     df = pd.read_csv(args.dataset_path, encoding=DATASET_ENCODING, names=DATASET_COLUMNS)

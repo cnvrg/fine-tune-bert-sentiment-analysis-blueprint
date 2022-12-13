@@ -11,16 +11,10 @@ import re
 import os
 import pathlib
 import sys
-scripts_dir = pathlib.Path(__file__).parent.resolve()
-sys.path.append(str(scripts_dir))
 import argparse
 import yaml
 
-# Read config file
-with open("fine-tune-inference-config.yaml", "r") as file:
-    config = yaml.load(file, Loader=yaml.FullLoader)
-
-def parse_parameters():
+def parse_parameters(scripts_dir):
     model_path = os.path.join(scripts_dir, 'checkpoint-50')
     
     parser = argparse.ArgumentParser(description="""finetune pre-trained Huggingface bert model""")
@@ -72,7 +66,14 @@ class Dataset_test(torch.utils.data.Dataset):
 
 # Define main function
 def main():
-    args = parse_parameters()
+    scripts_dir = pathlib.Path(__file__).parent.resolve()
+    sys.path.append(str(scripts_dir))   
+    
+    # Read config file
+    with open("fine-tune-inference-config.yaml", "r") as file:
+        config = yaml.load(file, Loader=yaml.FullLoader)
+
+    args = parse_parameters(scripts_dir)
     result_path = args.result_path
     text_column = args.text_column
     input_filename = args.input_filename
@@ -93,7 +94,9 @@ def main():
     # ----- 2. predicton from Fine-tune pretrained model -----#
     DATASET_COLUMNS = config["DATASET_COLUMNS"]
     DATASET_ENCODING = config["DATASET_ENCODING"]
-    test_data = pd.read_csv(input_filename, encoding=DATASET_ENCODING, names=DATASET_COLUMNS)
+    test_data = pd.read_csv(input_filename, encoding=DATASET_ENCODING)
+    if "text" not in list(test_data.columns):
+        test_data.columns = DATASET_COLUMNS
     test_data[text_column] = test_data[text_column].apply(lambda x: preprocess(x))
     test_data.head(15)
 
@@ -117,7 +120,14 @@ def main():
     # Preprocess raw predictions
     y_pred = np.argmax(raw_pred, axis=1)
     print("====prediction Result====", y_pred)
-    test_data[config["DATASET_PREDICTION"]] = y_pred
+
+    # Decode sentiment
+    label = []
+    sentiment_label = ['negative', 'neutral', 'positive']
+    for item in y_pred:
+        label.append(sentiment_label[int(item.round())])
+
+    test_data[config["DATASET_PREDICTION"]] = label
 
     # Save the prediction result
     test_data[[config["DATASET_TEXT"], config["DATASET_PREDICTION"]]].to_csv(result_path+config["RESULT_FILE"], header=True, index=False)

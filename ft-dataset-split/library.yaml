@@ -1,7 +1,7 @@
 ---
-title: Fine Tune Dataset Split # required on creation, a slug will be generated from the title? -> inference-library
-version: 1.0.11 # required
-description: "Split original sentiment dataset into 1% and 10% sets" # optional
+title: FT Dataset Split # required on creation, a slug will be generated from the title? -> inference-library
+version: 1.0.1 # required
+description: "Split original sentiment dataset into 0.01% set" # optional
 icon: python # optional
 
 # Optional properties for creating authors
@@ -37,7 +37,7 @@ arguments:
   - key: dataset_path
     type: categorical
     values:
-      - /input/dev_fine_tune_s3_connector_2/sentiment_analysis_data/1.6m_twitts.csv
+      - /input/dev_ft_s3_connector/sentiment_analysis_data/1.6m_twitts.csv
   - key: valid_size
     type: categorical
     values:

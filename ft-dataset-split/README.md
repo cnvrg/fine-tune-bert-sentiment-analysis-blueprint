@@ -1,7 +1,7 @@
 # Fine Tune Bert Model for Sentiment Analysis Twitter Dataset Split
 ## _cnvrg_
 
-The Fine Tune Dataset Split library splits the downloaded dataset from S3 connector into 1% and 0.01% sets to run on CPUs. It is only able to run small dataset on large pre-trained model on CPUs.  As this library splits on twitter dataset with 1.6M into smaller dataset with same proportional number of labels as original dataset to prevent impacting the accuracy of results. 
+The Fine Tune Dataset Split library splits the downloaded dataset from S3 connector into small set (e.g. 0.01%) to run on CPUs. It is only able to run small dataset on large pre-trained model on CPUs.  As this library splits on twitter dataset with 1.6M into smaller dataset with same proportional number of labels as original dataset to prevent impacting the accuracy of results. 
 
 Click [here]() for more information on this library.
 
@@ -12,9 +12,9 @@ The following list outlines this library's high-level flow:
 
 ## Inputs
 This library assumes that the user has access to the preprocessed dataset via previous libraries in the Blueprint. The input dataset must be in CSV format.
-The ADTS Train-Valid Split library requires the following inputs:
+The FT Dataset Split library requires the following inputs:
 * `--dataset_path` - string, required. Provide the path to the original dataset in CSV format.
-* `--valid_size` - string, optional. Specify size of the validation set as a number between 0.0 and 1.0. Default value: `0.0001`, which is 1% of original dataset.
+* `--valid_size` - string, optional. Specify size of the validation set as a number between 0.0 and 1.0. Default value: `0.0001`, which is 0.01% of original dataset.
 
 ## Sample Command
 Refer to the following sample command:

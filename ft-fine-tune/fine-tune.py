@@ -15,29 +15,6 @@ import yaml
 # import logging
 from pynvml import *
 
-# Read config file
-with open("fine-tune-config.yaml", "r") as file:
-    config = yaml.load(file, Loader=yaml.FullLoader)
-
-print("Check if GPU available", torch.cuda.is_available())
-device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-print("If CPU or GPU Selected", device)
-
-if device == "cuda:0":
-    def print_gpu_utilization():
-        nvmlInit()
-        handle = nvmlDeviceGetHandleByIndex(0)
-        info = nvmlDeviceGetMemoryInfo(handle)
-        print(f"GPU memory occupied: {info.used//1024**2} MB.")
-
-    def print_summary(result):
-        print(f"Time: {result.metrics['train_runtime']:.2f}")
-        print(f"Samples/second: {result.metrics['train_samples_per_second']:.2f}")
-        print_gpu_utilization()
-
-    print("====Beginning GPU Utilization===")
-    print_gpu_utilization()
-
 def parse_parameters():
     parser = argparse.ArgumentParser(description="""finetune pre-trained Huggingface bert model""")
     parser.add_argument('-input_filename', '--input_filename', action='store', dest='input_filename', required=False,
@@ -68,6 +45,9 @@ def parse_parameters():
 
 
 def decode_sentiment(label):
+    # Read config file
+    with open("fine-tune-config.yaml", "r") as file:
+        config = yaml.load(file, Loader=yaml.FullLoader)
     # decode_map = {0: "NEGATIVE", 2: "NEUTRAL", 4: "POSITIVE"}
     decode_map = config["DECODE_MAP"]
     return decode_map[int(label)]
@@ -146,6 +126,29 @@ def compute_metrics(p):
 
 # Define main function:
 def main():
+    # Read config file
+    with open("fine-tune-config.yaml", "r") as file:
+        config = yaml.load(file, Loader=yaml.FullLoader)
+
+    print("Check if GPU available", torch.cuda.is_available())
+    device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+    print("If CPU or GPU Selected", device)
+
+    if device == "cuda:0":
+        def print_gpu_utilization():
+            nvmlInit()
+            handle = nvmlDeviceGetHandleByIndex(0)
+            info = nvmlDeviceGetMemoryInfo(handle)
+            print(f"GPU memory occupied: {info.used//1024**2} MB.")
+
+        def print_summary(result):
+            print(f"Time: {result.metrics['train_runtime']:.2f}")
+            print(f"Samples/second: {result.metrics['train_samples_per_second']:.2f}")
+            print_gpu_utilization()
+
+        print("====Beginning GPU Utilization===")
+        print_gpu_utilization()
+
     args = parse_parameters()
     output_model_path = args.output_model_path
     text_column = args.text_column
@@ -217,9 +220,9 @@ def main():
     # Train pre-trained model
     trainer.train()
 
-if device == "cuda:0":
-    print("====Ending GPU Utilization===")
-    print_gpu_utilization()
+    if device == "cuda:0":
+        print("====Ending GPU Utilization===")
+        print_gpu_utilization()
 
 if __name__ == "__main__":
     main()
